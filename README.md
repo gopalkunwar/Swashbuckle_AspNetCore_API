@@ -153,7 +153,7 @@ Configure Swagger to use the XML file that's generated with the preceding instru
       }
 In the preceding code, Reflection is used to build an XML file name matching that of the web API project. The AppContext.BaseDirectory property is used to construct a path to the XML file. Some Swagger features (for example, schemata of input parameters or HTTP methods and response codes from the respective attributes) work without the use of an XML documentation file. For most features, namely method summaries and the descriptions of parameters and response codes, the use of an XML file is mandatory.
 
-
+### <summary></summary>
 Adding triple-slash comments to an action enhances the Swagger UI by adding the description to the section header. Add a <summary> element above the Delete action:
   
         /// <summary>
@@ -175,5 +175,139 @@ Adding triple-slash comments to an action enhances the Swagger UI by adding the 
 
           return NoContent();
       }
+      
+### <remarks></remarks>
+Add a <remarks> element to the Create action method documentation. It supplements information specified in the <summary> element and provides a more robust Swagger UI. The <remarks> element content can consist of text, JSON, or XML.
 
+        /// <summary>
+        /// Creates a TodoItem.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Todo
+        ///     {
+        ///        "id": 1,
+        ///        "name": "Item1",
+        ///        "isComplete": true
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="item"></param>
+        /// <returns>A newly created TodoItem</returns>
+        /// <response code="201">Returns the newly created item</response>
+        /// <response code="400">If the item is null</response>            
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<TodoItem> Create(TodoItem item)
+        {
+            _context.TodoItems.Add(item);
+            _context.SaveChanges();
 
+            return CreatedAtRoute("GetTodo", new { id = item.Id }, item);
+        }
+
+### Data annotations
+Mark the model with attributes, found in the System.ComponentModel.DataAnnotations namespace, to help drive the Swagger UI components.
+
+Add the [Required] attribute to the Name property of the TodoItem class:
+
+        using System.ComponentModel;
+        using System.ComponentModel.DataAnnotations;
+
+        namespace TodoApi.Models
+        {
+            public class TodoItem
+            {
+                public long Id { get; set; }
+
+                [Required]
+                public string Name { get; set; }
+
+                [DefaultValue(false)]
+                public bool IsComplete { get; set; }
+            }
+        }
+
+Add the [Produces("application/json")] attribute to the API controller. Its purpose is to declare that the controller's actions support a response content type of application/json:
+
+        [Produces("application/json")]
+        [Route("api/[controller]")]
+        [ApiController]
+        public class TodoController : ControllerBase
+        {
+            private readonly TodoContext _context;
+            
+### Describe response types
+Developers consuming a web API are most concerned with what's returned—specifically response types and error codes (if not standard). The response types and error codes are denoted in the XML comments and data annotations.
+
+The Create action returns an HTTP 201 status code on success. An HTTP 400 status code is returned when the posted request body is null. Without proper documentation in the Swagger UI, the consumer lacks knowledge of these expected outcomes. Fix that problem by adding the highlighted lines in the following example:
+
+        /// <summary>
+        /// Creates a TodoItem.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Todo
+        ///     {
+        ///        "id": 1,
+        ///        "name": "Item1",
+        ///        "isComplete": true
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="item"></param>
+        /// <returns>A newly created TodoItem</returns>
+        /// <response code="201">Returns the newly created item</response>
+        /// <response code="400">If the item is null</response>            
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<TodoItem> Create(TodoItem item)
+        {
+            _context.TodoItems.Add(item);
+            _context.SaveChanges();
+
+            return CreatedAtRoute("GetTodo", new { id = item.Id }, item);
+        }
+        
+        
+ ### Customize the UI
+The default UI is both functional and presentable. However, API documentation pages should represent your brand or theme. Branding the Swashbuckle components requires adding the resources to serve static files and building the folder structure to host those files.
+
+If targeting .NET Framework or .NET Core 1.x, add the Microsoft.AspNetCore.StaticFiles NuGet package to the project:
+
+        <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.0" />
+        
+The preceding NuGet package is already installed if targeting .NET Core 2.x and using the metapackage.
+Enable Static File Middleware:
+
+        public void Configure(IApplicationBuilder app)
+        {
+            app.UseStaticFiles();
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
+        
+ To inject additional CSS stylesheets, add them to the project's wwwroot folder and specify the relative path in the middleware options:
+ 
+    app.UseSwaggerUI(c =>
+    {
+         c.InjectStylesheet("/swagger-ui/custom.css");
+    }
