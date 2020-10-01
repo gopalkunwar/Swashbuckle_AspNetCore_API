@@ -5,13 +5,21 @@ There are three main components to Swashbuckle:
 
 * Swashbuckle.AspNetCore.SwaggerGen: a Swagger generator that builds SwaggerDocument objects directly from your routes, controllers, and models. It's typically combined with the Swagger endpoint middleware to automatically expose Swagger JSON.
 
-* Swashbuckle.AspNetCore.SwaggerUI: an embedded version of the Swagger UI tool. It interprets Swagger JSON to build a rich, customizable experience for describing the web API functionality. It includes built-in test harnesses for the public methods.
+* Swashbuckle.AspNetCore.SwaggerUI: an embedded version of the Swagger UI tool. It interprets Swagger JSON to build a rich, customizable experience for describing the web API functionality. It includes built-in test harnesses for the public methods. Swashbuckle includes Swagger UI and provides methods to configure and customize the web interface. 
 
-## Package installation
+### Swagger/OpenAPI
+Library SwashBuckle.AspNetCore, which is an implementation of Swagger/OpenAPI.
+
+OpenAPI refers to the OpenAPI Specification (OAS) developed and supported by the Open API Initiative (OAI). The OAS describes the capabilities of API endpoints, and the OAS is language-agnostic and framework-agnostic. By default, the specification is presented in a document named swagger.json.
+
+Swagger refers to the tools for implementing the OAS, which for example, is described in the swagger.json file. The Swagger tooling ecosystem, including Swagger Editor, Swagger UI, Swagger Codegen, etc., helps developers generate useful documentation and interactive pages for Web APIs. Different programming languages and frameworks have their own implementations of OAS.
+
+
+### Package installation
 
     Install-Package Swashbuckle.AspNetCore
   
-## Add and configure Swagger middleware
+### Add and configure Swagger middleware
     
       public void ConfigureServices(IServiceCollection services)
       {
@@ -36,7 +44,14 @@ There are three main components to Swashbuckle:
           endpoints.MapControllers();
       });
     }
-    
+The code above contains three major parts:
+* The method services.AddSwaggerGen() registers services for generating Swagger/OpenAPI documents and configures options for the generators.
+* The middleware app.UseSwagger() generates the OpenAPI document and responds to the client if an HTTP request hits the configured route (e.g., /swagger/v1/swagger.json).
+* The middleware app.UseSwaggerUI() serves the Swagger UI web page at a specified route, and configures the presentation and optional customization of the web interface.
+
+### OpenAPI Document
+One of the critical things Swashbuckle does is generating the OpenAPI document, swagger.json. Based on the configurations in the code above, we can view the JSON document by visiting the route path /swagger/v1/swagger.json. 
+
 To serve the Swagger UI at the app's root (http://localhost:<port>/), set the RoutePrefix property to an empty string:
 
     app.UseSwaggerUI(c =>
@@ -78,13 +93,18 @@ Using the OpenApiInfo class, modify the information displayed in the UI:
           });
       });
 
-## XML comments
+## XML Documentation
+Much of the groundwork has been done. We can focus on documenting our Web API endpoints. The goal is to document our APIs using XML comments and let Swagger UI generate human-friendly descriptions for Operations, Parameters and Schemas based on XML comment files.
+To follow along, please make sure the Web API project has the following PropertyGroup section in the csproj file.
+
 XML comments can be enabled with the following approaches:
 
       <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
       </PropertyGroup>
+
+This PropertyGroup section in the csproj file instructs the compiler to generate an XML document file based on XML comments and ignore the warning due to undocumented public types and members. In order to configure Swagger to use the generated XML file, we need to specify the XML file path in the Swagger options
 
 Enabling XML comments provides debug information for undocumented public types and members. Undocumented types and members are indicated by the warning message. For example, the following message indicates a violation of warning code 1591:
 
