@@ -88,9 +88,7 @@ namespace API
                 endpoints.MapControllers();
             });
 
-            app.UseSwagger(o=> {
-                o.SerializeAsV2 = true;
-            });
+            app.UseSwagger();
             app.UseSwaggerUI(
                 c =>
                 {
