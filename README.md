@@ -12,11 +12,11 @@ There are three main components to Swashbuckle:
   
 ## Add and configure Swagger middleware
     
-    public void ConfigureServices(IServiceCollection services)
-    {
-      // Register the Swagger generator, defining 1 or more Swagger documents
-      services.AddSwaggerGen();
-    }
+      public void ConfigureServices(IServiceCollection services)
+      {
+        // Register the Swagger generator, defining 1 or more Swagger documents
+        services.AddSwaggerGen();
+      }
     public void Configure(IApplicationBuilder app)
     {
       // Enable middleware to serve generated Swagger as a JSON endpoint.
@@ -147,13 +147,13 @@ In the preceding code, Reflection is used to build an XML file name matching tha
 
 
 Adding triple-slash comments to an action enhances the Swagger UI by adding the description to the section header. Add a <summary> element above the Delete action:
-      /// <summary>
-      /// Deletes a specific TodoItem.
-      /// </summary>
-      /// <param name="id"></param>        
-      [HttpDelete("{id}")]
-      public IActionResult Delete(long id)
-      {
+        /// <summary>
+        /// Deletes a specific TodoItem.
+        /// </summary>
+        /// <param name="id"></param>        
+        [HttpDelete("{id}")]
+        public IActionResult Delete(long id)
+        {
           var todo = _context.TodoItems.Find(id);
 
           if (todo == null)
