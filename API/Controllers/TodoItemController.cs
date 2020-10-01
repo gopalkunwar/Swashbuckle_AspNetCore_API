@@ -37,10 +37,6 @@ namespace API.Controllers
         ///     "Id":1,
         ///     "Title":"Car Maintenance",
         ///     "Completed":true
-        /// }, {
-        ///     "Id":2,
-        ///     "Title":"Laptop Repairing",
-        ///     "Completed":false
         /// }]
         ///   
         /// </remarks>
@@ -145,11 +141,20 @@ namespace API.Controllers
         /// <summary>
         /// Modifies a ToDoItem
         /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///PUT /api/todoitem/3
+        ///         {
+        ///         "id":3,
+        ///         "title":"Car Wash",
+        ///         "Completed":false
+        ///     }
+        /// </remarks>
         /// <param name="id"></param>
         /// <param name="todoItem"></param>
         /// <returns>A newly updated TodoItem</returns>
         /// <response code="200">Returns all the Todoitems</response>
-        /// <response code="400">If the ID not matched</response>
+        /// <response code="400">If the request is invalid</response>
 
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]

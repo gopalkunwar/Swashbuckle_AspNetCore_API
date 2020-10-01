@@ -22,10 +22,6 @@
                 "Id":1,
                 "Title":"Car Maintenance",
                 "Completed":true
-            }, {
-                "Id":2,
-                "Title":"Laptop Repairing",
-                "Completed":false
             }]
               
             </remarks>
@@ -93,14 +89,23 @@
             <response code="400">If the item is null</response>
         </member>
         <member name="M:API.Controllers.TodoItemController.Update(System.Int32,Core.Entity.TodoItem)">
-            <summary>
-            Modifies a ToDoItem
-            </summary>
-            <param name="id"></param>
-            <param name="todoItem"></param>
-            <returns>A newly updated TodoItem</returns>
-            <response code="200">Returns all the Todoitems</response>
-            <response code="400">If the ID not matched</response>
+             <summary>
+             Modifies a ToDoItem
+             </summary>
+             <remarks>
+             Sample request:
+            PUT /api/todoitem/3
+                     {
+                     "id":3,
+                     "title":"Car Wash",
+                     "Completed":false
+                 }
+             </remarks>
+             <param name="id"></param>
+             <param name="todoItem"></param>
+             <returns>A newly updated TodoItem</returns>
+             <response code="200">Returns all the Todoitems</response>
+             <response code="400">If the request is invalid</response>
         </member>
         <member name="M:API.Controllers.TodoItemController.DeleteTodoItem(System.Int32)">
             <summary>

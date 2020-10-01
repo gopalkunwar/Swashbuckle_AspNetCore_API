@@ -68,6 +68,7 @@ namespace API
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 o.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+                o.EnableAnnotations();
             });
         }
 
