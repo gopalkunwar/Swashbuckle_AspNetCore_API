@@ -8,7 +8,8 @@ There are three main components to Swashbuckle:
 * Swashbuckle.AspNetCore.SwaggerUI: an embedded version of the Swagger UI tool. It interprets Swagger JSON to build a rich, customizable experience for describing the web API functionality. It includes built-in test harnesses for the public methods.
 
 ## Package installation
-  Install-Package Swashbuckle.AspNetCore
+
+    Install-Package Swashbuckle.AspNetCore
   
 ## Add and configure Swagger middleware
     
@@ -45,6 +46,7 @@ To serve the Swagger UI at the app's root (http://localhost:<port>/), set the Ro
     });
     
 To support backwards compatibility, exposing JSON in the 2.0 format
+
     app.UseSwagger(c =>
     {
         c.SerializeAsV2 = true;
@@ -52,6 +54,7 @@ To support backwards compatibility, exposing JSON in the 2.0 format
 
 ## API info and description
 Using the OpenApiInfo class, modify the information displayed in the UI:
+
       // Register the Swagger generator, defining 1 or more Swagger documents
       services.AddSwaggerGen(c =>
       {
@@ -98,18 +101,18 @@ To suppress warnings only for specific members, enclose the code in #pragma warn
 
       namespace TodoApi
       {
-      #pragma warning disable CS1591
-          public class Program
-          {
+          #pragma warning disable CS1591
+           public class Program
+           {
               public static void Main(string[] args) =>
-                  BuildWebHost(args).Run();
+                      BuildWebHost(args).Run();
 
               public static IWebHost BuildWebHost(string[] args) =>
-                  WebHost.CreateDefaultBuilder(args)
-                      .UseStartup<Startup>()
-                      .Build();
-          }
-      #pragma warning restore CS1591
+                      WebHost.CreateDefaultBuilder(args)
+                          .UseStartup<Startup>()
+                          .Build();
+           }
+          #pragma warning restore CS1591
       }
 
 Configure Swagger to use the XML file that's generated with the preceding instructions. For Linux or non-Windows operating systems, file names and paths can be case-sensitive. For example, a TodoApi.XML file is valid on Windows but not CentOS.
